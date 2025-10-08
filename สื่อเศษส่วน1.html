@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เรียนรู้เศษส่วน ป.3byครูอริยา</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            box-sizing: border-box;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Kanit', sans-serif;
+        }
+        
+        .fraction-visual {
+            transition: all 0.3s ease;
+        }
+        
+        .fraction-part {
+            transition: all 0.5s ease;
+        }
+        
+        .game-card {
+            transform: scale(1);
+            transition: transform 0.2s ease;
+        }
+        
+        .game-card:hover {
+            transform: scale(1.05);
+        }
+        
+        .correct-answer {
+            animation: bounce 0.6s ease;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+        
+        .pie-chart {
+            transform: rotate(-90deg);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-blue-100 min-h-full">
+    <div class="container mx-auto px-4 py-6">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-blue-800 mb-2">🧮 เรียนรู้เศษส่วน</h1>
+            <p class="text-xl text-blue-600">สำหรับนักเรียนชั้นประถมศึกษาปีที่ 3</p>
+        </div>
+
+        <!-- Navigation -->
+        <div class="flex justify-center mb-8">
+            <div class="bg-white rounded-full p-2 shadow-lg">
+                <button onclick="showSection('learn')" id="learnBtn" class="px-6 py-3 rounded-full font-medium transition-all bg-blue-500 text-white">
+                    📚 เรียนรู้
+                </button>
+                <button onclick="showSection('practice')" id="practiceBtn" class="px-6 py-3 rounded-full font-medium transition-all text-blue-600 hover:bg-blue-50">
+                    ✏️ ฝึกฝน
+                </button>
+                <button onclick="showSection('game')" id="gameBtn" class="px-6 py-3 rounded-full font-medium transition-all text-blue-600 hover:bg-blue-50">
+                    🎮 เกม
+                </button>
+            </div>
+        </div>
+
+        <!-- Learning Section -->
+        <div id="learnSection" class="section">
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Theory -->
+                <div class="bg-white rounded-2xl p-6 shadow-lg">
+                    <h2 class="text-2xl font-bold text-blue-800 mb-4">🤔 เศษส่วนคืออะไร?</h2>
+                    <div class="space-y-4 text-lg">
+                        <p class="text-gray-700">เศษส่วนคือ การแบ่งสิ่งของออกเป็นส่วนๆ ที่เท่ากัน</p>
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <p class="font-semibold text-blue-800">ส่วนประกอบของเศษส่วน:</p>
+                            <div class="mt-2">
+                                <div class="text-center text-3xl font-bold text-blue-600">
+                                    <span class="text-red-500">1</span>
+                                    <div class="border-t-2 border-blue-800 mx-8 inline-block w-8"></div>
+                                    <span class="text-green-600">4</span>
+                                </div>
+                                <div class="flex justify-between mt-2 text-sm">
+                                    <span class="text-red-500">เศษ (ส่วนที่เอา)</span>
+                                    <span class="text-green-600">ส่วน (ทั้งหมด)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Visual -->
+                <div class="bg-white rounded-2xl p-6 shadow-lg">
+                    <h3 class="text-xl font-bold text-blue-800 mb-4">🍕 ลองดูตัวอย่าง</h3>
+                    <div class="text-center">
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">เลือกเศษส่วน:</label>
+                            <select id="fractionSelect" onchange="updateVisual()" class="px-4 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <option value="1/2">1/2</option>
+                                <option value="1/3">1/3</option>
+                                <option value="2/3">2/3</option>
+                                <option value="1/4">1/4</option>
+                                <option value="3/4">3/4</option>
+                                <option value="1/6">1/6</option>
+                                <option value="5/6">5/6</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Pizza Visual -->
+                        <div class="mb-4">
+                            <svg width="200" height="200" class="mx-auto">
+                                <circle cx="100" cy="100" r="90" fill="#fbbf24" stroke="#f59e0b" stroke-width="3"/>
+                                <g id="pizzaSlices"></g>
+                            </svg>
+                        </div>
+                        
+                        <!-- Bar Visual -->
+                        <div class="mb-4">
+                            <div class="w-64 h-12 mx-auto border-2 border-blue-300 rounded-lg overflow-hidden bg-gray-100">
+                                <div id="barFill" class="h-full bg-blue-500 transition-all duration-500"></div>
+                            </div>
+                        </div>
+                        
+                        <p id="fractionText" class="text-2xl font-bold text-blue-800"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Practice Section -->
+        <div id="practiceSection" class="section hidden">
+            <div class="bg-white rounded-2xl p-6 shadow-lg max-w-2xl mx-auto">
+                <h2 class="text-2xl font-bold text-blue-800 mb-6 text-center">✏️ ฝึกฝนเศษส่วน</h2>
+                
+                <div id="practiceQuestion" class="text-center mb-6">
+                    <div class="mb-4">
+                        <svg id="practiceVisual" width="240" height="80" class="mx-auto border-2 border-blue-300 rounded-lg">
+                        </svg>
+                    </div>
+                    <p id="questionText" class="text-xl font-medium text-gray-700 mb-4"></p>
+                    
+                    <div class="grid grid-cols-2 gap-4 max-w-md mx-auto">
+                        <button onclick="checkAnswer(0)" id="option0" class="practice-option bg-blue-100 hover:bg-blue-200 text-blue-800 font-medium py-3 px-4 rounded-lg transition-all"></button>
+                        <button onclick="checkAnswer(1)" id="option1" class="practice-option bg-blue-100 hover:bg-blue-200 text-blue-800 font-medium py-3 px-4 rounded-lg transition-all"></button>
+                        <button onclick="checkAnswer(2)" id="option2" class="practice-option bg-blue-100 hover:bg-blue-200 text-blue-800 font-medium py-3 px-4 rounded-lg transition-all"></button>
+                        <button onclick="checkAnswer(3)" id="option3" class="practice-option bg-blue-100 hover:bg-blue-200 text-blue-800 font-medium py-3 px-4 rounded-lg transition-all"></button>
+                    </div>
+                </div>
+                
+                <div class="text-center">
+                    <div id="practiceResult" class="mb-4 text-lg font-medium"></div>
+                    <button onclick="generatePracticeQuestion()" class="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-6 rounded-lg transition-all">
+                        ข้อใหม่
+                    </button>
+                    <div class="mt-4">
+                        <span class="text-sm text-gray-600">คะแนน: </span>
+                        <span id="practiceScore" class="text-lg font-bold text-blue-600">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Section -->
+        <div id="gameSection" class="section hidden">
+            <div class="bg-white rounded-2xl p-6 shadow-lg max-w-4xl mx-auto">
+                <h2 class="text-2xl font-bold text-blue-800 mb-6 text-center">🎮 เกมจับคู่เศษส่วน</h2>
+                
+                <div class="text-center mb-6">
+                    <div class="flex justify-center items-center gap-8 mb-4">
+                        <div>
+                            <span class="text-sm text-gray-600">คะแนน: </span>
+                            <span id="gameScore" class="text-2xl font-bold text-blue-600">0</span>
+                        </div>
+                        <div>
+                            <span class="text-sm text-gray-600">เวลา: </span>
+                            <span id="gameTimer" class="text-2xl font-bold text-red-500">60</span>
+                        </div>
+                    </div>
+                    <button onclick="startGame()" id="startGameBtn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-lg transition-all">
+                        🚀 เริ่มเกม
+                    </button>
+                </div>
+
+                <div id="gameBoard" class="grid grid-cols-4 gap-4 max-w-2xl mx-auto hidden">
+                    <!-- Game cards will be generated here -->
+                </div>
+
+                <div id="gameResult" class="text-center mt-6 hidden">
+                    <h3 class="text-2xl font-bold text-blue-800 mb-2">🎉 เกมจบแล้ว!</h3>
+                    <p class="text-lg text-gray-700 mb-4">คะแนนรวม: <span id="finalScore" class="font-bold text-blue-600"></span></p>
+                    <button onclick="resetGame()" class="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-6 rounded-lg transition-all">
+                        เล่นใหม่
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let practiceScore = 0;
+        let gameScore = 0;
+        let gameTimer = 60;
+        let gameInterval;
+        let selectedCards = [];
+        let matchedPairs = 0;
+        let gameActive = false;
+
+        // Show/Hide sections
+        function showSection(section) {
+            document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
+            document.getElementById(section + 'Section').classList.remove('hidden');
+            
+            // Update button styles
+            document.querySelectorAll('button[id$="Btn"]').forEach(btn => {
+                btn.className = 'px-6 py-3 rounded-full font-medium transition-all text-blue-600 hover:bg-blue-50';
+            });
+            document.getElementById(section + 'Btn').className = 'px-6 py-3 rounded-full font-medium transition-all bg-blue-500 text-white';
+            
+            if (section === 'learn') {
+                updateVisual();
+            } else if (section === 'practice') {
+                generatePracticeQuestion();
+            }
+        }
+
+        // Update visual representation
+        function updateVisual() {
+            const fraction = document.getElementById('fractionSelect').value;
+            const [numerator, denominator] = fraction.split('/').map(Number);
+            
+            // Update pizza visual
+            const pizzaSlices = document.getElementById('pizzaSlices');
+            pizzaSlices.innerHTML = '';
+            
+            for (let i = 0; i < denominator; i++) {
+                const angle = (360 / denominator) * i;
+                const nextAngle = (360 / denominator) * (i + 1);
+                const filled = i < numerator;
+                
+                const slice = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                const x1 = 100 + 85 * Math.cos((angle - 90) * Math.PI / 180);
+                const y1 = 100 + 85 * Math.sin((angle - 90) * Math.PI / 180);
+                const x2 = 100 + 85 * Math.cos((nextAngle - 90) * Math.PI / 180);
+                const y2 = 100 + 85 * Math.sin((nextAngle - 90) * Math.PI / 180);
+                
+                slice.setAttribute('d', `M 100 100 L ${x1} ${y1} A 85 85 0 0 1 ${x2} ${y2} Z`);
+                slice.setAttribute('fill', filled ? '#ef4444' : '#fbbf24');
+                slice.setAttribute('stroke', '#f59e0b');
+                slice.setAttribute('stroke-width', '2');
+                slice.classList.add('fraction-part');
+                
+                pizzaSlices.appendChild(slice);
+            }
+            
+            // Update bar visual
+            const percentage = (numerator / denominator) * 100;
+            document.getElementById('barFill').style.width = percentage + '%';
+            
+            // Update text
+            document.getElementById('fractionText').textContent = `${fraction} = ${numerator} ส่วนจาก ${denominator} ส่วน`;
+        }
+
+        // Practice questions
+        function generatePracticeQuestion() {
+            const fractions = [
+                {num: 1, den: 2}, {num: 1, den: 3}, {num: 2, den: 3},
+                {num: 1, den: 4}, {num: 3, den: 4}, {num: 1, den: 6}, {num: 5, den: 6}
+            ];
+            
+            const correct = fractions[Math.floor(Math.random() * fractions.length)];
+            const options = [correct];
+            
+            // Generate wrong options
+            while (options.length < 4) {
+                const wrong = fractions[Math.floor(Math.random() * fractions.length)];
+                if (!options.some(opt => opt.num === wrong.num && opt.den === wrong.den)) {
+                    options.push(wrong);
+                }
+            }
+            
+            // Shuffle options
+            for (let i = options.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [options[i], options[j]] = [options[j], options[i]];
+            }
+            
+            // Store correct answer
+            window.correctAnswer = options.findIndex(opt => opt.num === correct.num && opt.den === correct.den);
+            
+            // Update visual
+            const visual = document.getElementById('practiceVisual');
+            visual.innerHTML = '';
+            
+            const rectWidth = 200;
+            const rectHeight = 60;
+            const startX = 20;
+            const startY = 10;
+            
+            // Draw rectangles
+            for (let i = 0; i < correct.den; i++) {
+                const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                rect.setAttribute('x', startX + (i * (rectWidth / correct.den)));
+                rect.setAttribute('y', startY);
+                rect.setAttribute('width', rectWidth / correct.den - 2);
+                rect.setAttribute('height', rectHeight);
+                rect.setAttribute('fill', i < correct.num ? '#3b82f6' : '#e5e7eb');
+                rect.setAttribute('stroke', '#374151');
+                rect.setAttribute('stroke-width', '2');
+                visual.appendChild(rect);
+            }
+            
+            // Update question and options
+            document.getElementById('questionText').textContent = 'ส่วนที่ระบายสีแสดงเศษส่วนใด?';
+            
+            options.forEach((option, index) => {
+                document.getElementById(`option${index}`).textContent = `${option.num}/${option.den}`;
+                document.getElementById(`option${index}`).className = 'practice-option bg-blue-100 hover:bg-blue-200 text-blue-800 font-medium py-3 px-4 rounded-lg transition-all';
+            });
+            
+            document.getElementById('practiceResult').textContent = '';
+        }
+
+        function checkAnswer(selected) {
+            const buttons = document.querySelectorAll('.practice-option');
+            
+            if (selected === window.correctAnswer) {
+                buttons[selected].className = 'practice-option bg-green-500 text-white font-medium py-3 px-4 rounded-lg correct-answer';
+                document.getElementById('practiceResult').innerHTML = '<span class="text-green-600">🎉 ถูกต้อง!</span>';
+                practiceScore += 10;
+            } else {
+                buttons[selected].className = 'practice-option bg-red-500 text-white font-medium py-3 px-4 rounded-lg';
+                buttons[window.correctAnswer].className = 'practice-option bg-green-500 text-white font-medium py-3 px-4 rounded-lg correct-answer';
+                document.getElementById('practiceResult').innerHTML = '<span class="text-red-600">❌ ลองใหม่นะ!</span>';
+            }
+            
+            document.getElementById('practiceScore').textContent = practiceScore;
+            
+            // Disable all buttons temporarily
+            buttons.forEach(btn => btn.disabled = true);
+            setTimeout(() => {
+                buttons.forEach(btn => btn.disabled = false);
+            }, 1500);
+        }
+
+        // Game functions
+        function startGame() {
+            gameActive = true;
+            gameScore = 0;
+            gameTimer = 60;
+            matchedPairs = 0;
+            selectedCards = [];
+            
+            document.getElementById('startGameBtn').classList.add('hidden');
+            document.getElementById('gameBoard').classList.remove('hidden');
+            document.getElementById('gameResult').classList.add('hidden');
+            
+            generateGameCards();
+            
+            gameInterval = setInterval(() => {
+                gameTimer--;
+                document.getElementById('gameTimer').textContent = gameTimer;
+                
+                if (gameTimer <= 0 || matchedPairs >= 6) {
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        function generateGameCards() {
+            const fractions = [
+                {display: '1/2', visual: 'half'}, {display: '50%', visual: 'half'},
+                {display: '1/4', visual: 'quarter'}, {display: '25%', visual: 'quarter'},
+                {display: '3/4', visual: 'threequarter'}, {display: '75%', visual: 'threequarter'},
+                {display: '1/3', visual: 'third'}, {display: '33%', visual: 'third'},
+                {display: '2/3', visual: 'twothird'}, {display: '67%', visual: 'twothird'},
+                {display: '1/6', visual: 'sixth'}, {display: '17%', visual: 'sixth'}
+            ];
+            
+            const gameBoard = document.getElementById('gameBoard');
+            gameBoard.innerHTML = '';
+            
+            fractions.forEach((fraction, index) => {
+                const card = document.createElement('div');
+                card.className = 'game-card bg-blue-200 hover:bg-blue-300 p-4 rounded-lg cursor-pointer text-center font-bold text-blue-800 transition-all';
+                card.textContent = fraction.display;
+                card.dataset.visual = fraction.visual;
+                card.dataset.index = index;
+                card.onclick = () => selectCard(card);
+                gameBoard.appendChild(card);
+            });
+        }
+
+        function selectCard(card) {
+            if (!gameActive || card.classList.contains('matched') || selectedCards.includes(card)) return;
+            
+            card.classList.add('bg-yellow-300');
+            selectedCards.push(card);
+            
+            if (selectedCards.length === 2) {
+                setTimeout(checkMatch, 500);
+            }
+        }
+
+        function checkMatch() {
+            const [card1, card2] = selectedCards;
+            
+            if (card1.dataset.visual === card2.dataset.visual) {
+                // Match found
+                card1.classList.remove('bg-yellow-300');
+                card2.classList.remove('bg-yellow-300');
+                card1.classList.add('matched', 'bg-green-400', 'text-white');
+                card2.classList.add('matched', 'bg-green-400', 'text-white');
+                
+                matchedPairs++;
+                gameScore += 20;
+                document.getElementById('gameScore').textContent = gameScore;
+                
+                if (matchedPairs >= 6) {
+                    endGame();
+                }
+            } else {
+                // No match
+                card1.classList.remove('bg-yellow-300');
+                card2.classList.remove('bg-yellow-300');
+            }
+            
+            selectedCards = [];
+        }
+
+        function endGame() {
+            gameActive = false;
+            clearInterval(gameInterval);
+            
+            document.getElementById('gameBoard').classList.add('hidden');
+            document.getElementById('gameResult').classList.remove('hidden');
+            document.getElementById('finalScore').textContent = gameScore;
+        }
+
+        function resetGame() {
+            document.getElementById('startGameBtn').classList.remove('hidden');
+            document.getElementById('gameResult').classList.add('hidden');
+            document.getElementById('gameScore').textContent = '0';
+            document.getElementById('gameTimer').textContent = '60';
+        }
+
+        // Initialize
+        updateVisual();
+        generatePracticeQuestion();
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98b2766445e30c87',t:'MTc1OTg5MzIwOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
